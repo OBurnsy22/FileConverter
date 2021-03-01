@@ -8,7 +8,13 @@ Steps:
 4. Automatically download the file to after a conversion is selected
 '''
 import tkinter as tk
-from tkinter import filedialog
+import tkinter.filedialog
+from conversion import *
+
+#global variables
+path_to_file = " "
+file_type = " "
+compatable_converstion = []
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -21,14 +27,22 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        #file explorer button  
-        self.hi_there = tk.Button(self)
-        self.hi_there["text"] = "Open File"
-        self.hi_there["command"] = self.open_file
-        self.hi_there.pack(side="top")
+        #Select file button
+        self.select_file = tk.Button(self)
+        self.select_file["text"] = "Select File"
+        self.select_file["command"] = self.open_file
+        self.select_file.pack(side="middle")
+        #Drag and drop files area
 
-    def  open_file(self):
-        tk.filedialog.askopenfilename(initialdir="/", title="Select A File", filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
+    def open_file(self):
+        path_to_file = tk.filedialog.askopenfilename(initialdir="/", title="Select A File", filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
+        temp_str = " "
+        for chars in reversed(path_to_file):
+            if(chars == '.'):
+                break
+            temp_str += chars
+        file_type = temp_str[::-1]
+        compatable_converstion = retrieve_compatable_conversions(file_type)
 
 def main():
     root = tk.Tk()
