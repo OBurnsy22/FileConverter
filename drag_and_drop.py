@@ -1,13 +1,30 @@
-import Tkinter
-from TkinterDnD2 import *
+import tkinter as tk 
+from TkinterDnD2 import DND_FILES, TkinterDnD
 
-def drop(event):
-    entry_sv.set(event.data)
+def drop_inside_list_box(event):
+    listb.insert("end", event.data)
+
+#event.data is the file path
+def drop_inside_textbox(event):
+    tbox.delete("1.0", "end")
+    if event.data.endswith(".txt"):
+        with open(event.data, "r") as file:
+            for line in file:
+                line = line.strip()
+                tbox.insert("end", f"{line}\n")
+
 
 root = TkinterDnD.Tk()
-entry_sv = Tkinter.StringVar()
-entry = Tkinter.Entry(root, textvar=entry_sv, width=80)
-entry.pack(fill=Tkinter.X)
-entry.drop_target_register(DND_FILES)
-entry.dnd_bind('<<Drop>>', drop)
+root.geometry("800x500")
+
+listb = tk.Listbox(root, selectmode=tk.SINGLE, background="#ffe0d6")
+listb.pack(fill=tk.X)
+listb.drop_target_register(DND_FILES)
+listb.dnd_bind("<<Drop>>", drop_inside_list_box)
+
+tbox = tk.Text(root)
+tbox.pack()
+tbox.drop_target_register(DND_FILES)
+tbox.dnd_bind("<<DROP>>", drop_inside_textbox)
+
 root.mainloop()

@@ -9,6 +9,7 @@ Steps:
 '''
 import tkinter as tk
 import tkinter.filedialog
+from TkinterDnD2 import DND_FILES, TkinterDnD
 from conversion import *
 
 #global variables
@@ -30,11 +31,15 @@ class Application(tk.Frame):
         #Select file button
         self.select_file = tk.Button(self)
         self.select_file["text"] = "Select File"
-        self.select_file["command"] = self.open_file
-        self.select_file.pack(side="middle")
+        self.select_file["command"] = self.open_selected_file
+        self.select_file.pack(side="top")
         #Drag and drop files area
+        self.drop_box = tk.Listbox(root, selectmode=tk.SINGLE, background="#99ff99")
+        self.drop_box.pack(fill=tk.X)
+        self.drop_box.drop_target_register(DND_FILES)
+        self.drop_box.dnd_bind("<<Drop>>", open_dropped_file)
 
-    def open_file(self):
+    def open_selected_file(self):
         path_to_file = tk.filedialog.askopenfilename(initialdir="/", title="Select A File", filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
         temp_str = " "
         for chars in reversed(path_to_file):
@@ -43,11 +48,20 @@ class Application(tk.Frame):
             temp_str += chars
         file_type = temp_str[::-1]
         compatable_converstion = retrieve_compatable_conversions(file_type)
+    '''
+    def open_dropped_file(self, event):
+        compatable_converstion = retrieve_compatable_conversions_select(event.data)
+        breakpoint()
+    '''
+
 
 def main():
-    root = tk.Tk()
+    global root
+    root = TkinterDnD.Tk()
     app = Application(master=root)
     app.mainloop()
 
 if __name__ == "__main__":
     main()
+
+
