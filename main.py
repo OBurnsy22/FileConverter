@@ -28,16 +28,23 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        #Drag and drop files area
+        self.drop_box = tk.Listbox(root, selectmode=tk.SINGLE, background="#99ff99")
+        self.drop_box.pack(ipadx=170)
+        self.drop_box.pack(ipady=120)
+        self.drop_box.pack(side="left")
+        self.drop_box.drop_target_register(DND_FILES)
+        self.drop_box.dnd_bind("<<Drop>>", open_dropped_file)
         #Select file button
         self.select_file = tk.Button(self)
         self.select_file["text"] = "Select File"
         self.select_file["command"] = self.open_selected_file
-        self.select_file.pack(side="top")
-        #Drag and drop files area
-        self.drop_box = tk.Listbox(root, selectmode=tk.SINGLE, background="#99ff99")
-        self.drop_box.pack(fill=tk.X)
-        self.drop_box.drop_target_register(DND_FILES)
-        self.drop_box.dnd_bind("<<Drop>>", open_dropped_file)
+        self.select_file.place(relx=1.0, rely=1.0)
+        #Instructional Text
+        sentence = "Drag and drop or select your file"
+        self.instructions = tk.Text(root)
+        self.instructions.insert(tk.END, sentence)
+        self.instructions.place(relx=1.0, rely=1.0)
 
     def open_selected_file(self):
         path_to_file = tk.filedialog.askopenfilename(initialdir="/", title="Select A File", filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
