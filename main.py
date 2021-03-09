@@ -12,63 +12,42 @@ import tkinter.filedialog
 from TkinterDnD2 import DND_FILES, TkinterDnD
 from conversion import *
 
+#root window
+root = TkinterDnD.Tk()
+root.title("FileCNVTR")
+root.geometry('{}x{}'.format(960, 540))
+root.maxsize(960, 540)
+root.minsize(960, 540)
+
 #global variables
 path_to_file = " "
 file_type = " "
 compatable_converstion = []
+images = ["jpg", "jpeg", "tif", "tiff", "png"]
 
-class Application(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        self.master.title("File Converter")
-        self.master.minsize(1000,600)
-        self.master.maxsize(1200,800)
-        self.pack()
-        self.create_widgets()
+#helper fuctions
+def open_selected_file():
+    path_to_file = tk.filedialog.askopenfilename(initialdir="/", title="Select A File", filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
+    temp_str = " "
+    for chars in reversed(path_to_file):
+        if(chars == '.'):
+            break
+        temp_str += chars
+    file_type = temp_str[::-1]
+    compatable_converstion = retrieve_compatable_conversions(file_type)
 
-    def create_widgets(self):
-        #Drag and drop files area
-        self.drop_box = tk.Listbox(root, selectmode=tk.SINGLE, background="#99ff99")
-        self.drop_box.pack(ipadx=170)
-        self.drop_box.pack(ipady=120)
-        self.drop_box.pack(side="left")
-        self.drop_box.drop_target_register(DND_FILES)
-        self.drop_box.dnd_bind("<<Drop>>", open_dropped_file)
-        #Select file button
-        self.select_file = tk.Button(self)
-        self.select_file["text"] = "Select File"
-        self.select_file["command"] = self.open_selected_file
-        self.select_file.place(relx=1.0, rely=1.0)
-        #Instructional Text
-        sentence = "Drag and drop or select your file"
-        self.instructions = tk.Text(root)
-        self.instructions.insert(tk.END, sentence)
-        self.instructions.place(relx=1.0, rely=1.0)
+def retrieve_compatable_conversions(file_type):
+    if file_type in images:
+        return images
 
-    def open_selected_file(self):
-        path_to_file = tk.filedialog.askopenfilename(initialdir="/", title="Select A File", filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
-        temp_str = " "
-        for chars in reversed(path_to_file):
-            if(chars == '.'):
-                break
-            temp_str += chars
-        file_type = temp_str[::-1]
-        compatable_converstion = retrieve_compatable_conversions(file_type)
-    '''
-    def open_dropped_file(self, event):
-        compatable_converstion = retrieve_compatable_conversions_select(event.data)
-        breakpoint()
-    '''
+#container layouts
+dropbox_layout = tk.Frame(root, bg='green', width=700, height=520)
+conversion_layout = tk.Frame(root, bg='yellow', width=230, height=520)
 
-
-def main():
-    global root
-    root = TkinterDnD.Tk()
-    app = Application(master=root)
-    app.mainloop()
-
-if __name__ == "__main__":
-    main()
-
-
+#layout main containers
+root.grid_rowconfigure(1, weight=1)
+root.grid_columnconfigure(0, weight=1)
+dropbox_layout.grid(column=0, row=0,pady=10)
+conversion_layout.grid(column=1, row=0, padx=10)
+#runs application
+root.mainloop()
