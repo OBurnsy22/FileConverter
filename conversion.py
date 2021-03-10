@@ -5,5 +5,5 @@
 
 
 def open_dropped_file(event):
-    #compatable_converstion = retrieve_compatable_conversions_select(event.data)
+
     breakpoint()
